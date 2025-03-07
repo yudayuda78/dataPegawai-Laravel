@@ -154,7 +154,7 @@
 
             <div>
                 <label for="dokumen">Dokumen</label>
-                <div class="dropzone" id="my-awesome-dropzone"></div>
+                <input type="hidden" name="dokumenPaths" id="dokumenPaths">
             </div>
 
 
@@ -197,20 +197,32 @@
 
         Dropzone.autoDiscover = false;
 
-        let myDropzone = new Dropzone("#my-awesome-dropzone", {
-            url: "/tambahdata", // Endpoint untuk upload
-            paramName: "dokumen", // Sesuai dengan nama input di Laravel
-            maxFilesize: 5,
-            acceptedFiles: ".pdf,.doc,.docx,.xls,.xlsx,.txt",
-            dictDefaultMessage: "Seret dan lepaskan dokumen di sini atau klik untuk memilih",
-            addRemoveLinks: true,
-            success: function(file, response) {
-                console.log("Upload sukses:", response);
-            },
-            error: function(file, errorMessage) {
-                console.log("Terjadi kesalahan:", errorMessage);
-            }
+let myDropzone = new Dropzone("#my-awesome-dropzone", {
+    url: "/upload-dokumen",
+    paramName: "dokumen",
+    maxFilesize: 5, 
+    acceptedFiles: ".pdf,.doc,.docx,.xls,.xlsx,.txt",
+    dictDefaultMessage: "Seret dan lepaskan dokumen di sini atau klik untuk memilih",
+    addRemoveLinks: true,
+    autoProcessQueue: true,
+    parallelUploads: 10,
+
+    init: function() {
+        this.on("sending", function(file, xhr, formData) {
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
         });
+
+        this.on("success", function(file, response) {
+           
+            let hiddenInput = $("<input>")
+                .attr("type", "hidden")
+                .attr("name", "dokumenPaths[]")
+                .val(response.path);
+            $("form").append(hiddenInput);
+        });
+    }
+});
+
 
         
 
@@ -220,7 +232,7 @@
                 opens: 'left'
             }, function(start, end, label) {
                 $('#date_start').val(start.format(
-                    'YYYY-MM-DD')); // Mengatur value input sesuai tanggal yang dipilih
+                    'YYYY-MM-DD'));
             });
         });
     </script>

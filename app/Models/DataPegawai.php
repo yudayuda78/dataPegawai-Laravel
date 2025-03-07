@@ -9,5 +9,5 @@ class DataPegawai extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'position', 'kantor', 'umur', 'start_date'];
+    protected $fillable = ['nama', 'position', 'kantor', 'umur', 'start_date', 'photo', 'document'];
 }

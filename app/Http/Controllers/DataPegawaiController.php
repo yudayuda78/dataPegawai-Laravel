@@ -40,12 +40,24 @@ class DataPegawaiController extends Controller
         // ]);
 
         $dateStart = Carbon::createFromFormat('m/d/Y', $request->date_start)->format('Y-m-d');
+        // if ($request->hasFile('photo')) {
+        //     $photoPath = $request->file('photo')->storeAs('public/pegawai', time() . '_' . $request->file('photo')->getClientOriginalName());
+        // } else {
+        //     $photoPath = null;
+        // }
+
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->storeAs('public/pegawai', time() . '_' . $request->file('photo')->getClientOriginalName());
+            $file = $request->file('photo');
+            $originalName = $file->getClientOriginalName();
+            $destinationPath = public_path('pegawai');
+            $file->move($destinationPath, $originalName);
+            $photoPath = 'pegawai/' . $originalName;
         } else {
             $photoPath = null;
-        }
-
+        };
+        // dd($photoPath);
+        $dokumenPaths = $request->dokumenPaths ?? [];
+        dd($dokumenPaths);
        
     
         DataPegawai::create([
@@ -54,6 +66,7 @@ class DataPegawaiController extends Controller
             'umur' => $request->umur,
             'kantor' => $request->kantor,
             'photo' => $photoPath,
+            'document' => json_encode($dokumenPaths),
             'start_date' => $dateStart,
         ]);
 
@@ -61,5 +74,22 @@ class DataPegawaiController extends Controller
      
 
     }
+
+    public function uploadDokumen(Request $request){
+        if ($request->hasFile('dokumen')) {
+            $file = $request->file('dokumen');
+            $originalName = $file->getClientOriginalName();
+            $destinationPath = public_path('dokumen');
+        
+        // Pindahkan file ke folder public/dokumen
+            $file->move($destinationPath, $originalName);
+            $filePath = 'dokumen/' . $originalName;
+
+            return response()->json(['path' => $filePath]);
+        }
+
+        return response()->json(['error' => 'Tidak ada file yang diunggah'], 400);
+    }
+
 
 }
