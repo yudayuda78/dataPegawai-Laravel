@@ -109,7 +109,7 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Tambah Data Pegawai</h2>
 
-        <form action="/tambahdata" method="POST" enctype="multipart/form-data" class="space-y-4 dropzone" >
+        <form action="/tambahdata" method="POST" enctype="multipart/form-data" class="space-y-4 " >
             @csrf
 
             <!-- Nama -->
