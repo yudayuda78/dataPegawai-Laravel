@@ -12,9 +12,16 @@ class DataPegawaiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $pegawai = DataPegawai::all();
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'List Data Pegawai',
+                'data' => $pegawai
+            ], 200);
+        }
         return view('datapegawai', compact('pegawai'));
     }
 
