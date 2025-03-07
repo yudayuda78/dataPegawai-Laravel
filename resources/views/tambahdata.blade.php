@@ -109,7 +109,7 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Tambah Data Pegawai</h2>
 
-        <form action="/tambahdata" method="POST" enctype="multipart/form-data" class="space-y-4 " >
+        <form action="/tambahdata" method="POST" enctype="multipart/form-data" class="space-y-4 dropzone" >
             @csrf
 
             <!-- Nama -->
@@ -152,11 +152,19 @@
                 <input id="photo" name="photo" type="file" class="file">
             </div>
 
-            <div>
+            {{-- <div>
                 <label for="dokumen">Dokumen</label>
-                <input type="hidden" name="dokumenPaths" id="dokumenPaths">
+                
+                <input type="file" class="dropzone" id="my-awesome-dropzone" name="dokumen">
+            </div> --}}
+
+            <div id="my-awesome-dropzone" class="dropzone">
+                <div class="dz-message">
+                    <p>Upload dokumen di sini</p>
+                </div>
             </div>
 
+            
 
             <Div>
                 <label for="date_start" class="block text-gray-700 font-medium mb-1">Mulai Bekerja</label>
@@ -197,32 +205,20 @@
 
         Dropzone.autoDiscover = false;
 
-let myDropzone = new Dropzone("#my-awesome-dropzone", {
-    url: "/upload-dokumen",
-    paramName: "dokumen",
-    maxFilesize: 5, 
-    acceptedFiles: ".pdf,.doc,.docx,.xls,.xlsx,.txt",
-    dictDefaultMessage: "Seret dan lepaskan dokumen di sini atau klik untuk memilih",
-    addRemoveLinks: true,
-    autoProcessQueue: true,
-    parallelUploads: 10,
-
-    init: function() {
-        this.on("sending", function(file, xhr, formData) {
-            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-        });
-
-        this.on("success", function(file, response) {
-           
-            let hiddenInput = $("<input>")
-                .attr("type", "hidden")
-                .attr("name", "dokumenPaths[]")
-                .val(response.path);
-            $("form").append(hiddenInput);
-        });
-    }
-});
-
+    let myDropzone = new Dropzone("#my-awesome-dropzone", {
+        url: "/tambahdata", // Endpoint Laravel untuk upload
+        paramName: "dokumen",
+        maxFilesize: 5, // Maksimal 5MB
+        acceptedFiles: ".pdf,.doc,.docx,.xls,.xlsx,.txt",
+        dictDefaultMessage: "Seret dan lepaskan dokumen di sini atau klik untuk memilih",
+        addRemoveLinks: true,
+        success: function(file, response) {
+            console.log("Upload sukses:", response);
+        },
+        error: function(file, errorMessage) {
+            console.log("Terjadi kesalahan:", errorMessage);
+        }
+    });
 
         
 
@@ -232,7 +228,7 @@ let myDropzone = new Dropzone("#my-awesome-dropzone", {
                 opens: 'left'
             }, function(start, end, label) {
                 $('#date_start').val(start.format(
-                    'YYYY-MM-DD'));
+                    'YYYY-MM-DD')); // Mengatur value input sesuai tanggal yang dipilih
             });
         });
     </script>

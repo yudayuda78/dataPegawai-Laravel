@@ -57,7 +57,7 @@ class DataPegawaiController extends Controller
         };
         // dd($photoPath);
         $dokumenPaths = $request->dokumenPaths ?? [];
-        dd($dokumenPaths);
+        // dd($dokumenPaths);
        
     
         DataPegawai::create([
